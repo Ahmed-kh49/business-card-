@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="Ahmed Ismail - Electronic Business Card">
+  <title>Ahmed Ismail | Electronic Business Card</title>
+
+  <style>
+    :root {
+      --primary: #0f766e;
+      --primary-dark: #115e59;
+      --accent: #14b8a6;
+      --bg: #f0fdfa;
+      --card: rgba(255,255,255,.96);
+      --text: #16302d;
+      --muted: #64748b;
+      --border: #dbe7e5;
+      --shadow: 0 20px 60px rgba(15, 118, 110, .15);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(20,184,166,.20), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(15,118,110,.15), transparent 30%),
+        var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(1050px, 100%);
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .language-label {
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    select, button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 13px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    select:focus, button:focus, a:focus {
+      outline: 3px solid rgba(20,184,166,.25);
+      outline-offset: 2px;
+    }
+
+    .card {
+      overflow: hidden;
+      border: 1px solid rgba(219,231,229,.9);
+      border-radius: 30px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      position: relative;
+      padding: 42px;
+      color: white;
+      background: linear-gradient(135deg, #115e59, #0f766e 55%, #14b8a6);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+      right: -70px;
+      top: -90px;
+      background: rgba(255,255,255,.10);
+    }
+
+    .identity {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .avatar {
+      width: 112px;
+      height: 112px;
+      flex: 0 0 112px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.18);
+      border: 2px solid rgba(255,255,255,.55);
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1;
+    }
+
+    .role {
+      margin: 0;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.5;
+      max-width: 720px;
+      opacity: .95;
+    }
+
+    .content {
+      padding: 34px 42px 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.35fr .85fr;
+      gap: 30px;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      color: var(--primary-dark);
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .info {
+      display: grid;
+      gap: 14px;
+    }
+
+    .info-item {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: #fbfffe;
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: #ccfbf1;
+      color: var(--primary-dark);
+      font-size: 1.15rem;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .value {
+      font-size: .98rem;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .value a {
+      color: var(--primary-dark);
+      text-decoration: none;
+    }
+
+    .value a:hover { text-decoration: underline; }
+
+    .qr-panel {
+      padding: 24px;
+      border-radius: 22px;
+      background: #f8fffd;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    #qrcode {
+      width: 180px;
+      height: 180px;
+      margin: 12px auto 16px;
+      display: grid;
+      place-items: center;
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    #qrcode img, #qrcode canvas {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .qr-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      flex: 1 1 150px;
+      min-height: 46px;
+      border: 0;
+      border-radius: 13px;
+      padding: 12px 16px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+    }
+
+    .btn:hover { background: var(--primary-dark); }
+
+    .btn.secondary {
+      color: var(--primary-dark);
+      background: #ccfbf1;
+    }
+
+    .footer {
+      padding: 0 42px 30px;
+      color: var(--muted);
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    @media (max-width: 760px) {
+      body { padding: 12px; align-items: flex-start; }
+      .toolbar { margin-top: 4px; }
+      .card { border-radius: 22px; }
+      .hero { padding: 30px 22px; }
+      .identity { align-items: flex-start; }
+      .avatar { width: 84px; height: 84px; flex-basis: 84px; font-size: 1.7rem; }
+      .content { padding: 26px 20px 30px; }
+      .grid { grid-template-columns: 1fr; gap: 24px; }
+      .footer { padding: 0 20px 24px; }
+    }
+
+    @media (max-width: 450px) {
+      .identity { flex-direction: column; }
+      .avatar { width: 76px; height: 76px; flex-basis: 76px; }
+      .toolbar { justify-content: stretch; }
+      select { width: 100%; }
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .toolbar, .actions { display: none; }
+      .card { box-shadow: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <div class="toolbar">
+      <span class="language-label" id="languageLabel">Language</span>
+      <select id="languageSelect" aria-label="Select language">
+        <option value="auto">🌐 Auto</option>
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="so">Soomaali</option>
+        <option value="ja">日本語</option>
+        <option value="ko">한국어</option>
+        <option value="vi">Tiếng Việt</option>
+      </select>
+    </div>
+
+    <section class="card" aria-label="Electronic business card">
+      <header class="hero">
+        <div class="identity">
+          <div class="avatar" aria-hidden="true">AI</div>
+          <div>
+            <h1>Ahmed Ismail</h1>
+            <p class="role" id="role"></p>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="grid">
+          <section>
+            <h2 class="section-title" id="contactTitle"></h2>
+
+            <div class="info">
+              <div class="info-item">
+                <div class="icon">🎓</div>
+                <div>
+                  <span class="label" id="programLabel"></span>
+                  <div class="value" id="program"></div>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <div class="icon">🏛️</div>
+                <div>
+                  <span class="label" id="collegeLabel"></span>
+                  <div class="value" id="college"></div>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <div class="icon">📍</div>
+                <div>
+                  <span class="label" id="addressLabel"></span>
+                  <div class="value" id="address"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="saveBtn" type="button"></button>
+              <button class="btn secondary" id="shareBtn" type="button"></button>
+              <button class="btn secondary" id="printBtn" type="button"></button>
+            </div>
+          </section>
+
+          <aside class="qr-panel">
+            <h2 class="section-title" id="qrTitle"></h2>
+            <div id="qrcode" aria-label="QR code"></div>
+            <p class="qr-note" id="qrNote"></p>
+          </aside>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <span id="footerText"></span>
+      </footer>
+    </section>
+  </main>
+
+  <!-- QRCode library. Internet is needed the first time the page loads this library. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    const profile = {
+      name: "Ahmed Ismail",
+      university: "Taipei Medical University",
+      school: "School of Health Care Administration",
+      college: "College of Management",
+      address: "11th Floor, College of Management, No. 301, YuanTong Road, Zhonghe District, New Taipei City, Taiwan"
+    };
+
+    const translations = {
+      en: {
+        lang: "Language",
+        role: "Student, School of Health Care Administration",
+        contact: "Professional Profile",
+        programLabel: "Program",
+        program: "School of Health Care Administration",
+        collegeLabel: "University / College",
+        college: "Taipei Medical University — College of Management",
+        addressLabel: "Address",
+        qrTitle: "Scan My Card",
+        qrNote: "Scan this QR code to open this electronic business card.",
+        save: "Save Contact",
+        share: "Share Card",
+        print: "Print Card",
+        footer: "Electronic Business Card • Responsive Web Design (RWD)"
+      },
+      zh: {
+        lang: "语言",
+        role: "医疗保健管理学院学生",
+        contact: "个人资料",
+        programLabel: "专业 / 项目",
+        program: "医疗保健管理学院",
+        collegeLabel: "大学 / 学院",
+        college: "台北医学大学 — 管理学院",
+        addressLabel: "地址",
+        qrTitle: "扫描我的名片",
+        qrNote: "扫描此二维码即可打开电子名片。",
+        save: "保存联系人",
+        share: "分享名片",
+        print: "打印名片",
+        footer: "电子名片 • 响应式网页设计（RWD）"
+      },
+      so: {
+        lang: "Luqad",
+        role: "Arday, School of Health Care Administration",
+        contact: "Macluumaadka Xirfadeed",
+        programLabel: "Barnaamijka",
+        program: "School of Health Care Administration",
+        collegeLabel: "Jaamacad / Kulliyad",
+        college: "Taipei Medical University — College of Management",
+        addressLabel: "Cinwaan",
+        qrTitle: "Sawir QR-ka",
+        qrNote: "QR-kan sawir si aad u furto kaarka ganacsiga elektaroonigga ah.",
+        save: "Kaydi Xiriirka",
+        share: "La Wadaag Kaarka",
+        print: "Daabac Kaarka",
+        footer: "Kaarka Ganacsiga Elektaroonigga ah • Responsive Web Design (RWD)"
+      },
+      ja: {
+        lang: "言語",
+        role: "医療・ヘルスケア管理学部 学生",
+        contact: "プロフィール",
+        programLabel: "専攻 / プログラム",
+        program: "医療・ヘルスケア管理学部",
+        collegeLabel: "大学 / 学部",
+        college: "台北医学大学 — 経営学部",
+        addressLabel: "住所",
+        qrTitle: "名刺をスキャン",
+        qrNote: "QRコードをスキャンして電子名刺を開いてください。",
+        save: "連絡先を保存",
+        share: "名刺を共有",
+        print: "名刺を印刷",
+        footer: "電子名刺 • レスポンシブWebデザイン（RWD）"
+      },
+      ko: {
+        lang: "언어",
+        role: "의료보건행정학과 학생",
+        contact: "프로필",
+        programLabel: "전공 / 프로그램",
+        program: "의료보건행정학과",
+        collegeLabel: "대학교 / 단과대학",
+        college: "타이베이 의과대학교 — 경영대학",
+        addressLabel: "주소",
+        qrTitle: "명함 스캔",
+        qrNote: "QR 코드를 스캔하여 전자 명함을 열어보세요.",
+        save: "연락처 저장",
+        share: "명함 공유",
+        print: "명함 인쇄",
+        footer: "전자 명함 • 반응형 웹 디자인(RWD)"
+      },
+      vi: {
+        lang: "Ngôn ngữ",
+        role: "Sinh viên, Trường Quản lý Chăm sóc Sức khỏe",
+        contact: "Hồ sơ chuyên môn",
+        programLabel: "Chương trình",
+        program: "Trường Quản lý Chăm sóc Sức khỏe",
+        collegeLabel: "Đại học / Khoa",
+        college: "Đại học Y khoa Đài Bắc — Khoa Quản lý",
+        addressLabel: "Địa chỉ",
+        qrTitle: "Quét danh thiếp",
+        qrNote: "Quét mã QR để mở danh thiếp điện tử này.",
+        save: "Lưu liên hệ",
+        share: "Chia sẻ danh thiếp",
+        print: "In danh thiếp",
+        footer: "Danh thiếp điện tử • Thiết kế web đáp ứng (RWD)"
+      }
+    };
+
+    function detectLanguage() {
+      const lang = (navigator.language || "en").toLowerCase();
+      if (lang.startsWith("zh")) return "zh";
+      if (lang.startsWith("so")) return "so";
+      if (lang.startsWith("ja")) return "ja";
+      if (lang.startsWith("ko")) return "ko";
+      if (lang.startsWith("vi")) return "vi";
+      return "en";
+    }
+
+    function makeVCard() {
+      return [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        "FN:Ahmed Ismail",
+        "ORG:Taipei Medical University;College of Management",
+        "TITLE:Student, School of Health Care Administration",
+        "ADR;TYPE=WORK:;;11th Floor, College of Management, No. 301, YuanTong Road;Zhonghe District;New Taipei City;;Taiwan",
+        "END:VCARD"
+      ].join("\\n");
+    }
+
+    function saveContact() {
+      const blob = new Blob([makeVCard()], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Ahmed_Ismail.vcf";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function shareCard() {
+      const shareData = {
+        title: "Ahmed Ismail",
+        text: "Ahmed Ismail — Student, School of Health Care Administration, Taipei Medical University.",
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch (e) {}
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Card link copied to clipboard.");
+      }
+    }
+
+    function renderQR() {
+      const box = document.getElementById("qrcode");
+      box.innerHTML = "";
+
+      if (typeof QRCode !== "undefined") {
+        new QRCode(box, {
+          text: window.location.href,
+          width: 160,
+          height: 160,
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } else {
+        box.textContent = "QR";
+      }
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.documentElement.lang = lang;
+
+      document.getElementById("languageLabel").textContent = t.lang;
+      document.getElementById("role").textContent = t.role;
+      document.getElementById("contactTitle").textContent = t.contact;
+      document.getElementById("programLabel").textContent = t.programLabel;
+      document.getElementById("program").textContent = t.program;
+      document.getElementById("collegeLabel").textContent = t.collegeLabel;
+      document.getElementById("college").textContent = t.college;
+      document.getElementById("addressLabel").textContent = t.addressLabel;
+      document.getElementById("qrTitle").textContent = t.qrTitle;
+      document.getElementById("qrNote").textContent = t.qrNote;
+      document.getElementById("saveBtn").textContent = t.save;
+      document.getElementById("shareBtn").textContent = t.share;
+      document.getElementById("printBtn").textContent = t.print;
+      document.getElementById("footerText").textContent = t.footer;
+      document.title = `${profile.name} | ${t.contact}`;
+    }
+
+    const select = document.getElementById("languageSelect");
+    select.addEventListener("change", () => {
+      const value = select.value;
+      if (value === "auto") {
+        const detected = detectLanguage();
+        applyLanguage(detected);
+      } else {
+        applyLanguage(value);
+      }
+    });
+
+    document.getElementById("saveBtn").addEventListener("click", saveContact);
+    document.getElementById("shareBtn").addEventListener("click", shareCard);
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+    // Automatically choose a language based on the visitor's browser.
+    const detected = detectLanguage();
+    select.value = "auto";
+    applyLanguage(detected);
+    renderQR();
+  </script>
+</body>
+</html>
